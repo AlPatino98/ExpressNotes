@@ -17,7 +17,7 @@
     <a class="navbar-brand" href="/">Note Taker
     </a>
     <div class="icons">
-      <i class="fas fa-save text-light save-note"></i>
+      <i class="fas fa-save text-light save-note" id="add-btn" ></i>
       <i class="fas fa-pen text-light new-note"></i>
     </div>
   </nav>
@@ -30,11 +30,76 @@
         </div>
       </div>
       <div class="col-8">
-        <input class="note-title" placeholder="Note Title" maxlength="28" type="text">
-        <textarea class="note-textarea" placeholder="Note Text"></textarea>
+        <input class="note-title" placeholder="Note Title"  id="title" maxlength="28" type="text">
+        <textarea class="note-textarea" placeholder="Note Text" id="content"></textarea>
+        <button type="submit" class="btn btn-primary submit" id="add-btn">save</button>
+      </div>
+    </div>
+    <div class = "row">
+      <div class="col-8">
+        <div class="card mt-4">
+          <div class="card-header">
+            <h4>NOTES</h4>
+          </div>
+          <div class="card-body">
+            <ul id="noteList" class="list-group"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
       </div>
     </div>
   </div>
+
+  <script type="text/javascript">
+
+    $("#add-btn").on("click", function(event) {
+      event.preventDefault();
+      var newNote = {
+        title: $("#title").val().trim(),
+        text: $("#content").val().trim(),
+  
+      };
+
+    
+      $.post("/api/Notes", newNote)
+        .then(function(data) {
+          console.log("notes.html", data);
+          alert("Adding Notes...");
+        });
+    });
+
+    function runNotesQuery() {
+    // The AJAX function uses the URL of our API to GET the data associated with it (initially set to localhost)
+    $.ajax({ url: "/api/Notes", method: "GET" })
+      .then(function(NoteData) {
+
+        // Here we then log the tableData to console, where it will show up as an object.
+        console.log(NoteData);
+        console.log("------------------------------------");
+
+        // Loop through and display each of the notes
+        for (var i = 0; i < NoteData.length; i++) {
+
+          // Get a reference to the tableList element and populate it with tables
+          var noteList = $("#noteList");
+
+          // Then display the fields in the HTML (Section Name, Date, URL)
+          var listItem = $("<li class='list-group-item mt-4'>");
+
+          listItem.append(
+            $("<h2>").text("Note #" + (i + 1)),
+            $("<hr>"),
+           
+            $("<h2>").text("Title: " + noteData[i].title),
+            $("<h2>").text("Text: " + noteData[i].text),
+          );
+
+          noteList.append(listItem);
+        }
+      });
+  }
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="/assets/js/index.js"></script>
 </body>

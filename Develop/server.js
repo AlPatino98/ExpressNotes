@@ -1,39 +1,37 @@
+// Call for express module
 var express = require("express");
 var path = require("path");
-
 
 // Tells node that we are creating an "express" server
 var app = express();
 
-// Sets an initial port. We"ll use this later in our listener
-var PORT = process.env.PORT || 8080;
+// Sets an initial port
+var PORT = process.env.PORT || 7000;
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // ================================================================================
-// ROUTER
-// The below points our server to a series of "route" files.
-// These routes give our server a "map" of how to respond when users visit or request data from various URLs.
-// ================================================================================
 
-require("./routes/apiRoutes")(app);
-
+//html routes
+   //Home route
+app.get("/", function(req, res) {
+    res.sendFile(path.join(__dirname, "../public/index.html"));
+  });
+   // API route
 app.get("/notes", function(req, res) {
     res.sendFile(path.join(__dirname, "../public/notes.html"));
   });
 
-  // If no matching route is found default to home
-  app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, "../public/index.html"));
-  });
+
+//API routes
+require("./routes/apiRoute")(app);
 
 // =============================================================================
-// LISTENER
-// The below code effectively "starts" our server
-// =============================================================================
+
+//Server Listener
 
 app.listen(PORT, function() {
-  console.log("App listening on PORT: " + PORT);
+  console.log("Server listening on: http://localhost:" + PORT);
 });
